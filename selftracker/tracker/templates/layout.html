@@ -29,7 +29,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                 {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="cycle">Cycling</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="action">Planner</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/accounts/logout">Logout</a>
                 </li>

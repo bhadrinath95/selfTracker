@@ -55,31 +55,23 @@ select {
         </div>
         <!-- Top Users -->
         <div class="col-md-6">
-            <h4>Tracker</h4>
+            <h4>Action Planner</h4>
             <ul class="list-group">
-                {% if cycles %}
+                {% if actions %}
                 <div style="overflow-x:auto;">
                 	<table>
                 	<tr>
                 	<th>USER</th>
                 	<th>DATE</th>
-                	<th>START TIME</th>
-                	<th>TIME TAKEN</th>
-                	<th>DISTANCE</th>
-                	<th>MAX SPEED</th>
-                	<th>AVERAGE SPEED</th>
-                	<th>CALORIES</th>
+                	<th>TITLE</th>
+                	<th>DESCRIPTION</th>
                 	</tr>
-                	{% for cycle in cycles %}
+                	{% for action in actions %}
                 	<tr>
-                    <td>{{cycle.user}}</td>
-                    <td>{{cycle.date}}</td>
-                    <td>{{cycle.start_time}}</td>
-                    <td>{{cycle.time_taken}}</td>
-                    <td>{{cycle.distance}} km</td>
-                    <td>{{cycle.max_speed}} km/h</td>
-                    <td>{{cycle.average_speed}} km/h</td>
-                    <td>{{cycle.calories}}</td>
+                    <td>{{action.user}}</td>
+                    <td>{{action.date}}</td>
+                    <td>{{action.title|lower|capfirst }}</td>
+                    <td>{{action.description|lower|capfirst }}</td>
                     </tr>
                     {% endfor %}
                 	</table>

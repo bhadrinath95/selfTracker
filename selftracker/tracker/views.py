@@ -3,8 +3,8 @@ from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import render,HttpResponse,redirect
-from .models import CycleTracker
-from .forms import GenerateCycleForm
+from .models import CycleTracker, ActionPlanner
+from .forms import GenerateCycleForm, ActionPlannerForm 
 
 # Create your views here.
 class Register(View):
@@ -44,5 +44,26 @@ class Cycle(View):
             else:
                 messages.error(request,'Record creation is failed')
             form = GenerateCycleForm(None)
-            cycle_obj = CycleTracker.objects.filter(user=request.user)
+            cycle_obj = CycleTracker.objects.filter(user=request.user).order_by("date")
             return render(request,self.template_name,{"cycles": cycle_obj,"form": form})
+        
+class Action(View):
+    template_name='actionplanner.html'
+    def get(self,request):
+        if not request.user.is_authenticated:
+            return redirect('/accounts/login')
+        form = ActionPlannerForm(None)
+        action_obj = ActionPlanner.objects.filter(user=request.user)
+        return render(request,self.template_name,{"actions": action_obj,"form": form})
+    
+    def post(self, request):
+        if request.user.is_authenticated:
+            saveForm = ActionPlannerForm(request.POST)
+            if saveForm.is_valid():
+                saveForm.save()
+                messages.success(request,'Record is created successfully')
+            else:
+                messages.error(request,'Record creation is failed')
+            form = ActionPlannerForm(None)
+            action_obj = ActionPlanner.objects.filter(user=request.user).order_by("date")
+            return render(request,self.template_name,{"actions": action_obj,"form": form})

@@ -11,3 +11,9 @@ class CycleTracker(models.Model):
     max_speed=models.FloatField()
     average_speed=models.FloatField()
     calories=models.FloatField()
+    
+class ActionPlanner(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    date=models.DateField()
+    title= models.CharField(max_length=100)
+    description = models.TextField() 

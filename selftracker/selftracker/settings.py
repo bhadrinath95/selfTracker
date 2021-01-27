@@ -35,7 +35,7 @@ SECRET_KEY = '*2#!d@7!a$*x2&hhtd@vuz=)x(pzj@m65m983&ql5z(#i9rz!n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['selftracker.pythonanywhere.com', '127.0.0.1:8000']
+ALLOWED_HOSTS = ['selftracker.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
