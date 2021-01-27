@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+{% block style %}
+table {
+  font-family: arial, sans-serif;
+}
+
+td, th {
+  border: 1px solid black;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+select { 
+            
+            left: 1%; 
+            right: 1%; 
+        }
+{% endblock %}
+{% block content %}
+<main class="container mt-3">
+    <div class="row">
+        <!-- Categories -->
+        <div class="col-md-6">
+            <h4 class="mb-3 pb-1 border-bottom">Add Record</h4>
+            <div class="list-group">
+            	{% if form %}
+	            	<form method='POST' action='' enctype='multipart/form-data'>
+					{% csrf_token %}
+	                <table>
+					{% for field in form %}
+					<tr>
+					<th>
+					{{field.label}} {% if field.field.required %} * {% endif %}
+					</th>
+					<td>
+					{{field}}
+					</td>
+					</tr>
+					{% endfor %}
+					</table>
+					<hr />
+					<input type='submit' value='Generate' style="background:#034f84;color:white;"/>
+					</form>
+					{% for msg in messages %}
+				    <p class="{{ msg.tags }}">{{msg}}</p>
+				    {% endfor %}
+            	{% endif %}
+            </div>
+        </div>
+        <!-- Top Users -->
+        <div class="col-md-6">
+            <h4 class="mb-3 pb-1 border-bottom">Tracker</h4>
+            <ul class="list-group">
+                {% if cycles %}
+                	<table>
+                	<tr>
+                	<th>USER</th>
+                	<th>DATE</th>
+                	<th>START TIME</th>
+                	<th>TIME TAKEN</th>
+                	<th>DISTANCE</th>
+                	<th>MAX SPEED</th>
+                	<th>AVERAGE SPEED</th>
+                	<th>CALORIES</th>
+                	</tr>
+                	{% for cycle in cycles %}
+                	<tr>
+                    <td>{{cycle.user}}</td>
+                    <td>{{cycle.date}}</td>
+                    <td>{{cycle.start_time}}</td>
+                    <td>{{cycle.time_taken}}</td>
+                    <td>{{cycle.distance}}</td>
+                    <td>{{cycle.max_speed}}</td>
+                    <td>{{cycle.average_speed}}</td>
+                    <td>{{cycle.calories}}</td>
+                    </tr>
+                    {% endfor %}
+                	</table>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</main>
+{% endblock %}
