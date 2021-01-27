@@ -43,7 +43,7 @@ select {
 					{% endfor %}
 					</table>
 					<hr />
-					<button class='btn btn-primary' type="submit" name="NewItem" value="NewItem">Generate</button>
+					<input type='submit' value='Generate' style="background:#034f84;color:white;"/>
 					</form>
 					<br/>
 					{% for msg in messages %}
@@ -55,11 +55,9 @@ select {
         </div>
         <!-- Top Users -->
         <div class="col-md-6">
-            <h4>To Do</h4>
+            <h4>Preparation</h4>
             <ul class="list-group">
-                {% if reminders %}
-                <form method='POST' action='' enctype='multipart/form-data'>
-				{% csrf_token %}
+                {% if prepares %}
                 <div style="overflow-x:auto;">
                 	<table>
                 	<tr>
@@ -67,20 +65,17 @@ select {
                 	<th>DATE</th>
                 	<th>TITLE</th>
                 	<th>DESCRIPTION</th>
-                	<th>EDIT</th>
                 	</tr>
-                	{% for reminder in reminders %}
+                	{% for prepare in prepares %}
                 	<tr>
-                    <td>{{reminder.user}}</td>
-                    <td>{{reminder.date}}</td>
-                    <td>{{reminder.title|lower|capfirst }}</td>
-                    <td>{{reminder.description|linebreaks }}</td>
-                    <td><button class='btn btn-success' type="submit" name="EditItem" value="{{ reminder.id }}">Edit</button></td>
+                    <td>{{prepare.user}}</td>
+                    <td>{{prepare.date}}</td>
+                    <td>{{prepare.title}}</td>
+                    <td>{{prepare.description|linebreaks}}</td>
                     </tr>
                     {% endfor %}
                 	</table>
                 </div>
-                </form>
                 {% endif %}
             </ul>
             <br />

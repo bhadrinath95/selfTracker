@@ -24,3 +24,19 @@ class Reminder(models.Model):
     title= models.CharField(max_length=100)
     description = models.TextField() 
     status= models.BooleanField(default=False)
+    
+class Preparation(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    date=models.DateField()
+    title= models.CharField(max_length=100)
+    description = models.TextField() 
+    
+class Interview(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    date=models.DateField()
+    company= models.CharField(max_length=100)
+    role= models.CharField(max_length=100)
+    round= models.CharField(max_length=100)
+    description= models.TextField() 
+    status= models.BooleanField(default=False)
+    

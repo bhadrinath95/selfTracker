@@ -55,9 +55,9 @@ select {
         </div>
         <!-- Top Users -->
         <div class="col-md-6">
-            <h4>To Do</h4>
+            <h4>Interview</h4>
             <ul class="list-group">
-                {% if reminders %}
+                {% if interviews %}
                 <form method='POST' action='' enctype='multipart/form-data'>
 				{% csrf_token %}
                 <div style="overflow-x:auto;">
@@ -65,17 +65,23 @@ select {
                 	<tr>
                 	<th>USER</th>
                 	<th>DATE</th>
-                	<th>TITLE</th>
+                	<th>COMPANY</th>
+                	<th>ROLE</th>
+                	<th>ROUND</th>
                 	<th>DESCRIPTION</th>
+                	<th>STATUS</th>
                 	<th>EDIT</th>
                 	</tr>
-                	{% for reminder in reminders %}
+                	{% for interview in interviews %}
                 	<tr>
-                    <td>{{reminder.user}}</td>
-                    <td>{{reminder.date}}</td>
-                    <td>{{reminder.title|lower|capfirst }}</td>
-                    <td>{{reminder.description|linebreaks }}</td>
-                    <td><button class='btn btn-success' type="submit" name="EditItem" value="{{ reminder.id }}">Edit</button></td>
+                    <td>{{interview.user}}</td>
+                    <td>{{interview.date}}</td>
+                    <td>{{interview.company}}</td>
+                    <td>{{interview.role}}</td>
+                    <td>{{interview.round}}</td>
+                    <td>{{interview.description|linebreaks}}</td>
+                    <td>{% if interview.status == False %}In Progress{% else %}Completed{% endif %}</td>
+                    <td><button class='btn btn-success' type="submit" name="EditItem" value="{{ interview.id }}">Edit</button></td>
                     </tr>
                     {% endfor %}
                 	</table>

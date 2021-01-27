@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CycleTracker, ActionPlanner, Reminder
+from .models import CycleTracker, ActionPlanner, Reminder, Preparation, Interview
 
 # Register your models here.
 class CycleTrackerDisplay(admin.ModelAdmin):
@@ -11,3 +11,9 @@ admin.site.register(ActionPlanner, ActionPlannerDisplay)
 class ReminderDisplay(admin.ModelAdmin):
     list_display=('user','date','title','description','status')
 admin.site.register(Reminder, ReminderDisplay)
+class PreparationDisplay(admin.ModelAdmin):
+    list_display=('user','date','title','description')
+admin.site.register(Preparation, PreparationDisplay)
+class InterviewDisplay(admin.ModelAdmin):
+    list_display=('user','date','company','role','round','description','status')
+admin.site.register(Interview, InterviewDisplay)

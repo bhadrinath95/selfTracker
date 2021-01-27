@@ -3,8 +3,8 @@ from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import render,HttpResponse,redirect
-from .models import CycleTracker, ActionPlanner, Reminder
-from .forms import GenerateCycleForm, ActionPlannerForm, ReminderForm
+from .models import CycleTracker, ActionPlanner, Reminder, Preparation, Interview
+from .forms import GenerateCycleForm, ActionPlannerForm, ReminderForm, PreparationForm, InterviewForm
 
 # Create your views here.
 class Register(View):
@@ -47,6 +47,56 @@ class Cycle(View):
             cycle_obj = CycleTracker.objects.filter(user=request.user).order_by("date")
             return render(request,self.template_name,{"cycles": cycle_obj,"form": form})
         
+class Prepare(View):
+    template_name='prepare.html'
+    def get(self,request):
+        if not request.user.is_authenticated:
+            return redirect('/accounts/login')
+        form = PreparationForm(None)
+        prepare_obj = Preparation.objects.filter(user=request.user)
+        return render(request,self.template_name,{"prepares": prepare_obj,"form": form})
+    
+    def post(self, request):
+        if request.user.is_authenticated:
+            saveForm = PreparationForm(request.POST)
+            if saveForm.is_valid():
+                saveForm.save()
+                messages.success(request,'Record is created successfully')
+            else:
+                messages.error(request,'Record creation is failed')
+            form = PreparationForm(None)
+            prepare_obj = Preparation.objects.filter(user=request.user).order_by("date")
+            return render(request,self.template_name,{"prepares": prepare_obj,"form": form})
+        
+class InterviewView(View):
+    template_name='interview.html'
+    def get(self,request):
+        if not request.user.is_authenticated:
+            return redirect('/accounts/login')
+        form = InterviewForm(None)
+        interview_obj = Interview.objects.filter(user=request.user)
+        return render(request,self.template_name,{"interviews": interview_obj,"form": form})
+    
+    def post(self, request):
+        if request.user.is_authenticated:
+            saveForm = InterviewForm(request.POST)
+            if request.POST.get("NewItem"):
+                saveForm = InterviewForm(request.POST)
+                if saveForm.is_valid():
+                    saveForm.save()
+                    messages.success(request,'Record is created successfully')
+                else:
+                    messages.error(request,'Record creation is failed')
+                form = InterviewForm(None)
+                interview_obj = Interview.objects.filter(user=request.user).order_by("date")
+                return render(request,self.template_name,{"interviews": interview_obj,"form": form})
+            elif request.POST.get("EditItem"):
+                edititem = Interview.objects.get(id= request.POST.get("EditItem", ""))
+                Interview.objects.get(id= request.POST.get("EditItem", "")).delete()
+                form = InterviewForm(instance = edititem)
+                interview_obj = Interview.objects.filter(user=request.user).order_by("date")
+                return render(request,self.template_name,{"interviews": interview_obj,"form": form})
+
 class Action(View):
     template_name='actionplanner.html'
     def get(self,request):
