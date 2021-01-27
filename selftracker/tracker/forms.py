@@ -1,5 +1,5 @@
 from django import forms
-from .models import CycleTracker, ActionPlanner
+from .models import CycleTracker, ActionPlanner, Reminder
 
 class GenerateCycleForm(forms.ModelForm):
     date= forms.DateField(
@@ -27,4 +27,18 @@ class ActionPlannerForm(forms.ModelForm):
             visible.field.widget.attrs['class'] = 'narrow-select'
     class Meta:
         model = ActionPlanner
+        fields = '__all__'
+        
+class ReminderForm(forms.ModelForm):
+    date= forms.DateField(
+            widget=forms.TextInput(
+                attrs={'type': 'date'}
+            ), required=False
+        )
+    def __init__(self, *args, **kwargs):
+        super(ReminderForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'narrow-select'
+    class Meta:
+        model = Reminder
         fields = '__all__'

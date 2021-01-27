@@ -75,7 +75,7 @@ select {
                     <td>{{cycle.user}}</td>
                     <td>{{cycle.date}}</td>
                     <td>{{cycle.start_time}}</td>
-                    <td>{{cycle.time_taken}}</td>
+                    <td>{{cycle.time_taken.hour}}:{{cycle.time_taken.minute}}:{{cycle.time_taken.second}}</td>
                     <td>{{cycle.distance}} km</td>
                     <td>{{cycle.max_speed}} km/h</td>
                     <td>{{cycle.average_speed}} km/h</td>
@@ -86,6 +86,7 @@ select {
                 </div>
                 {% endif %}
             </ul>
+            <br />
         </div>
     </div>
 </main>

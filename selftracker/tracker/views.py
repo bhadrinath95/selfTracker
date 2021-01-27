@@ -3,8 +3,8 @@ from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import render,HttpResponse,redirect
-from .models import CycleTracker, ActionPlanner
-from .forms import GenerateCycleForm, ActionPlannerForm 
+from .models import CycleTracker, ActionPlanner, Reminder
+from .forms import GenerateCycleForm, ActionPlannerForm, ReminderForm
 
 # Create your views here.
 class Register(View):
@@ -67,3 +67,31 @@ class Action(View):
             form = ActionPlannerForm(None)
             action_obj = ActionPlanner.objects.filter(user=request.user).order_by("date")
             return render(request,self.template_name,{"actions": action_obj,"form": form})
+        
+class ToDo(View):
+    template_name='reminder.html'
+    def get(self,request):
+        if not request.user.is_authenticated:
+            return redirect('/accounts/login')
+        form = ReminderForm(None)
+        reminder_obj = Reminder.objects.filter(user=request.user).filter(status=False).order_by("date")
+        return render(request,self.template_name,{"reminders": reminder_obj,"form": form})
+    
+    def post(self, request):
+        if request.user.is_authenticated:
+            saveForm = ReminderForm(request.POST)
+            if request.POST.get("NewItem"):
+                if saveForm.is_valid():
+                    saveForm.save()
+                    messages.success(request,'Record is created successfully')
+                else:
+                    messages.error(request,'Record creation is failed')
+                form = ReminderForm(None)
+                reminder_obj = Reminder.objects.filter(user=request.user).filter(status=False).order_by("date")
+                return render(request,self.template_name,{"reminders": reminder_obj,"form": form})
+            elif request.POST.get("EditItem"):
+                edititem = Reminder.objects.get(id= request.POST.get("EditItem", ""))
+                Reminder.objects.get(id= request.POST.get("EditItem", "")).delete()
+                form = ReminderForm(instance = edititem)
+                reminder_obj = Reminder.objects.filter(user=request.user).filter(status=False).order_by("date")
+                return render(request,self.template_name,{"reminders": reminder_obj,"form": form})

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class CycleTracker(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    date=models.DateField(auto_now_add=True)
+    date=models.DateField()
     start_time= models.TimeField()
     time_taken=models.TimeField()
     distance= models.FloatField()
@@ -17,3 +17,10 @@ class ActionPlanner(models.Model):
     date=models.DateField()
     title= models.CharField(max_length=100)
     description = models.TextField() 
+    
+class Reminder(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    date=models.DateField()
+    title= models.CharField(max_length=100)
+    description = models.TextField() 
+    status= models.BooleanField(default=False)

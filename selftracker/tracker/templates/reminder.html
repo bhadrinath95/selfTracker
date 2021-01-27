@@ -43,7 +43,7 @@ select {
 					{% endfor %}
 					</table>
 					<hr />
-					<input type='submit' value='Generate' style="background:#034f84;color:white;"/>
+					<button class='btn btn-primary' type="submit" name="NewItem" value="NewItem">Generate</button>
 					</form>
 					<br/>
 					{% for msg in messages %}
@@ -55,9 +55,11 @@ select {
         </div>
         <!-- Top Users -->
         <div class="col-md-6">
-            <h4>Action Planner</h4>
+            <h4>TO DO</h4>
             <ul class="list-group">
-                {% if actions %}
+                {% if reminders %}
+                <form method='POST' action='' enctype='multipart/form-data'>
+				{% csrf_token %}
                 <div style="overflow-x:auto;">
                 	<table>
                 	<tr>
@@ -65,17 +67,20 @@ select {
                 	<th>DATE</th>
                 	<th>TITLE</th>
                 	<th>DESCRIPTION</th>
+                	<th>EDIT</th>
                 	</tr>
-                	{% for action in actions %}
+                	{% for reminder in reminders %}
                 	<tr>
-                    <td>{{action.user}}</td>
-                    <td>{{action.date}}</td>
-                    <td>{{action.title|lower|capfirst }}</td>
-                    <td>{{action.description|lower|capfirst }}</td>
+                    <td>{{reminder.user}}</td>
+                    <td>{{reminder.date}}</td>
+                    <td>{{reminder.title|lower|capfirst }}</td>
+                    <td>{{reminder.description|linebreaks }}</td>
+                    <td><button class='btn btn-success' type="submit" name="EditItem" value="{{ reminder.id }}">Edit</button></td>
                     </tr>
                     {% endfor %}
                 	</table>
                 </div>
+                </form>
                 {% endif %}
             </ul>
             <br />
