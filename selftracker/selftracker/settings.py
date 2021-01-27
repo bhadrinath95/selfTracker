@@ -35,7 +35,7 @@ SECRET_KEY = '*2#!d@7!a$*x2&hhtd@vuz=)x(pzj@m65m983&ql5z(#i9rz!n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['selftracker.pythonanywhere.com', '127.0.0.1:8000']
 
 
 # Application definition
@@ -129,6 +129,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/home/selfTracker/selfTracker/static'
 
 LOGIN_REDIRECT_URL='tracker:home'
 LOGOUT_REDIRECT_URL='login'
