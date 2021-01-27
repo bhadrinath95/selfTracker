@@ -2,8 +2,8 @@
 
 [selfTracker](http://selftracker.pythonanywhere.com/)
 
-User Name: selfTracker
-Email Id: bhadrinath95@hotmail.com
+User Name: selfTracker <br />
+Email Id: bhadrinath95@hotmail.com <br />
 
 ## Move To Root Directory
 ```shell
