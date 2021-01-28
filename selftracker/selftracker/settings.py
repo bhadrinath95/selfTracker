@@ -134,3 +134,11 @@ STATIC_ROOT = '/home/selfTracker/selfTracker/static'
 
 LOGIN_REDIRECT_URL='tracker:home'
 LOGOUT_REDIRECT_URL='login'
+
+#For Gmail- Use google apps
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'softwaregurukulam@gmail.com'
+EMAIL_HOST_PASSWORD = 'Bhadri@1007'
+EMAIL_PORT = 587

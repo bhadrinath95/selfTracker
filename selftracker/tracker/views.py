@@ -1,12 +1,467 @@
-from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import render,HttpResponse,redirect
 from .models import CycleTracker, ActionPlanner, Reminder, Preparation, Interview
 from .forms import GenerateCycleForm, ActionPlannerForm, ReminderForm, PreparationForm, InterviewForm
+from django.http import HttpResponse
+from io import BytesIO
+import xlwt
+from django.core.mail import EmailMessage
 
 # Create your views here.
+class export_cycle_xls(View):
+    def get(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="cycle.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Cycle')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Start_time', 'Time_taken', 'Distance', 'Max_speed', 'Average_speed', 'Calories' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = CycleTracker.objects.filter(user=request.user).values_list('user', 'date', 'start_time', 'time_taken', 'distance', 'max_speed', 'average_speed', 'calories')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                elif col_num == 2 or col_num == 3:
+                    date_time = row[col_num].strftime('%H:%M:%S')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Cycle Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('cycle.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+    def post(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="cycle.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Cycle')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Start_time', 'Time_taken', 'Distance', 'Max_speed', 'Average_speed', 'Calories' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = CycleTracker.objects.filter(user=request.user).values_list('user', 'date', 'start_time', 'time_taken', 'distance', 'max_speed', 'average_speed', 'calories')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                elif col_num == 2 or col_num == 3:
+                    date_time = row[col_num].strftime('%H:%M:%S')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Cycle Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        print(request.user.email)
+        email.attach('cycle.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+class export_action_xls(View):
+    def get(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="action.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Action')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Title', 'Description' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = ActionPlanner.objects.filter(user=request.user).values_list('user', 'date', 'title', 'description')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Action Planner Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('action.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+    def post(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="action.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Action')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Title', 'Description' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = ActionPlanner.objects.filter(user=request.user).values_list('user', 'date', 'title', 'description')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Action Planner Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('action.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+
+class export_prepare_xls(View):
+    def get(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="prepare.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Prepare')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Title', 'Description' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = Preparation.objects.filter(user=request.user).values_list('user', 'date', 'title', 'description')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Preparation Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('prepare.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+    def post(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="prepare.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Prepare')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Title', 'Description' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = Preparation.objects.filter(user=request.user).values_list('user', 'date', 'title', 'description')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Preparation Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('prepare.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+class export_todo_xls(View):
+    def get(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="todo.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('ToDo')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Title', 'Description', 'Status' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = Reminder.objects.filter(user=request.user).values_list('user', 'date', 'title', 'description', 'status')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Reminder Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('todo.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+    def post(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="todo.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('ToDo')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Title', 'Description', 'Status' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = Reminder.objects.filter(user=request.user).values_list('user', 'date', 'title', 'description', 'status')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Reminder Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('todo.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+class export_interview_xls(View):
+    def get(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="interview.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Interview')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Company', 'Role', 'Round', 'Description', 'Status' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = Interview.objects.filter(user=request.user).values_list('user', 'date', 'company', 'role', 'round', 'description', 'status')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Interview Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('interview.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+    
+    def post(self, request):
+        emailfile = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="interview.xls"'
+    
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Interview')
+    
+        # Sheet header, first row
+        row_num = 0
+    
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+    
+        columns = ['User', 'Date', 'Company', 'Role', 'Round', 'Description', 'Status' ]
+    
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+    
+        # Sheet body, remaining rows
+        font_style = xlwt.XFStyle()
+    
+        rows = Interview.objects.filter(user=request.user).values_list('user', 'date', 'company', 'role', 'round', 'description', 'status')
+        for row in rows:
+            row_num += 1
+            for col_num in range(len(row)):
+                if col_num == 1:
+                    date_time = row[col_num].strftime('%Y-%m-%d')
+                    ws.write(row_num, col_num, date_time, font_style)
+                else:
+                    ws.write(row_num, col_num, row[col_num], font_style)
+    
+        wb.save(response)
+        wb.save(emailfile)
+        
+        email = EmailMessage()
+        email.subject = 'Interview Backup'
+        email.body = 'Please find the attached xls file'
+        email.to = [request.user.email] 
+        email.attach('interview.xls', emailfile.getvalue(), 'application/ms-excel')
+        email.send(fail_silently=True)
+        
+        return response
+        
 class Register(View):
     def get(self,request):
         form=UserCreationForm

@@ -87,6 +87,11 @@ select {
                 	</table>
                 </div>
                 </form>
+                <hr />
+               	<form method='POST' action="{% url 'tracker:export_interview_xls' %}" enctype='multipart/form-data'>
+	            {% csrf_token %}
+	            <input type='submit' value='Export' style="background:#034f84;color:white;"/>
+	            </form>
                 {% endif %}
             </ul>
             <br />
