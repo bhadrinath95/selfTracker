@@ -25,10 +25,16 @@ class Reminder(models.Model):
     description = models.TextField() 
     status= models.BooleanField(default=False)
     
+class Topic(models.Model):
+    topic = models.CharField(max_length=100)
+    def __str__(self):
+        return self.topic
+        
 class Preparation(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     date=models.DateField()
     title= models.CharField(max_length=100)
+#     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, default=None)
     description = models.TextField() 
     
 class Interview(models.Model):

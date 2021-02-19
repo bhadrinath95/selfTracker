@@ -64,12 +64,14 @@ select {
                 	<th>USER</th>
                 	<th>DATE</th>
                 	<th>TITLE</th>
+                	<th>TOPIC</th>
                 	<th>DESCRIPTION</th>
                 	</tr>
                 	{% for prepare in prepares %}
                 	<tr>
                     <td>{{prepare.user}}</td>
                     <td>{{prepare.date}}</td>
+                    <td>{{prepare.title}}</td>
                     <td>{{prepare.title}}</td>
                     <td>{{prepare.description|linebreaks}}</td>
                     </tr>
