@@ -1,5 +1,6 @@
 import sys, os, django
 sys.path.append(os.path.join("D:/","Workspace","PythonWorkspace","selfTracker","selftracker"))
+#sys.path.append("/home/selfTracker/selfTracker/selftracker") #Linux
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "selftracker.settings")
 django.setup()
 
